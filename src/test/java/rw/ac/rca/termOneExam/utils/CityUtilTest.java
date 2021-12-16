@@ -3,6 +3,7 @@ package rw.ac.rca.termOneExam.utils;
 import org.junit.Test;
 import rw.ac.rca.termOneExam.domain.City;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -51,11 +52,7 @@ public class CityUtilTest {
         cities.add(musanze);
         cities.add(kigali);
 
-        boolean result = true;
-        if (!cities.contains(musanze) && !cities.contains(kigali))
-            result = false;
-
-        assertEquals(true, result);
+        assertThat(cities).extracting(City::getName).contains("Musanze","Kigali");
     }
 
 
