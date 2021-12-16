@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,23 +49,19 @@ public class CityServiceTest {
     @Test
 //    get_all fail service tests
     public void getById_Fail() {
-        Long id = 1000L;
-        when(cityRepository.findById(id)).thenReturn(Optional.empty());
-        Optional<City> city = cityService.getById(id);
-        assertTrue(city.get() == null);
+        when(cityRepository.findById(100L)).thenReturn(Optional.empty());
+
+        assertEquals(false, cityService.getById(100L).isPresent());
     }
 
     @Test
     public void add_success() {
-        CreateCityDTO dto = new CreateCityDTO();
-        dto.setName("Kigali");
-        dto.setWeather(24);
+        CreateCityDTO cityDTO = new CreateCityDTO();
+        cityDTO.setName("Rubavu");
+        cityDTO.setWeather(33);
+        when(cityRepository.save(any(City.class))).thenReturn(new City(cityDTO.getName(),cityDTO.getWeather()));
 
-        City city = new City(dto.getName(), dto.getWeather());
-
-        when(cityRepository.save(city)).thenReturn(city);
-
-        assertTrue(cityService.save(dto).getName() == "Kigali");
+        assertEquals(cityDTO.getName(), cityService.save(cityDTO).getName());
     }
 
     @Test
@@ -78,4 +75,19 @@ public class CityServiceTest {
 
         assertEquals(null, cityService.save(employeeDTO));
     }
+
+    @Test
+    public void existByName_success() {
+        when(cityRepository.existsByName("Kigali")).thenReturn(true);
+
+        assertEquals(true, cityService.existsByName("Kigali"));
+    }
+
+    @Test
+    public void existByName_fail() {
+        when(cityRepository.existsByName("Kigaliii")).thenReturn(false);
+
+        assertEquals(false, cityService.existsByName("Kigaliii"));
+    }
+
 }
