@@ -16,10 +16,13 @@ public class CityService {
 	@Autowired
 	private ICityRepository cityRepository;
 
+	public double calculate_Fahrenheit(double weather){
+		return ( weather * 9/5) + 32;
+	}
 	public Optional<City> getById(long id) {
 		Optional<City> city = cityRepository.findById(id);
 		if(city.isPresent()) {
-			city.get().setFahrenheit((city.get().getWeather() * 9/5) + 32);
+			city.get().setFahrenheit(calculate_Fahrenheit(city.get().getWeather()));
 		}
 		return city;
 	}
@@ -29,7 +32,7 @@ public class CityService {
 
 		List<City> cities =  cityRepository.findAll();
 		for(City city:cities) {
-			city.setFahrenheit((city.getWeather() * 9/5) + 32);
+			city.setFahrenheit(calculate_Fahrenheit(city.getWeather()));
 		}
 		return cities;
 	}
